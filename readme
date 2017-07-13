@@ -1,0 +1,94 @@
+Menu structure
+
+Gestion des ventes (gest_ven)
+Gestion des achats (gest_ach)
+Gestion de l’inventaire (gest_sto)
+Purge de la facturation (purge_proc)
+Retour au DOS
+
+
+Gestion des ventes (gest_ven)
+
+Comptes client
+Etiquetage
+	Tous les clients
+	Intervalle
+
+Crediter
+Modifier
+Visualisation
+Tous les clients
+Intervalle
+
+Impression
+Tous les clients
+Intervalle
+
+Comptes debiteurs
+Releve de Compte
+Analyse des ventes
+
+Facturation
+Facture
+Note de credit
+Annulation
+Visualisation
+Impression
+
+Edition Journal
+Quotidien
+Hebdomadaire
+Mensuel
+Par date
+
+
+
+
+Gestion des achats
+
+Compte Fournisseur
+Etiquetage
+Modifier
+Visualisation
+Debiter
+Releve de compte
+Compte crediteur
+
+Facturation
+Commande
+Facture
+Note de credit
+Annulation
+Visualisation
+Impression
+Achat/Depense
+
+Edition Journal
+Quotidien
+Hedbomadaire
+Mensuel
+Par la date
+
+
+Gestion de l’inventaire
+
+Articles
+Creation
+Annulation
+Modification
+	Etat du Stock
+		(Recherche par)
+		Article
+Groupe
+Fournisseur
+Articles manquants
+Tous les articles
+Mouvement du Stock
+		(Recherche par)
+		Article
+Groupe
+Fournisseur
+Back ordered
+Articles manquants
+Tous les articles
+
