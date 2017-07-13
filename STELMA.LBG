@@ -1,0 +1,208 @@
+* Programme..........: Stelma.LBG
+* Date...............: 8-13-91
+* Version............: dBASE IV -  Etiquette 1.1
+*
+*            Sp‚cifications
+*
+*   Largeur.......................: 35
+*   Hauteur.......................: 5
+*   Indentation ..................: 0
+*   Nombre d'‚tiquettes de front..: 1
+*   Espace entre ‚tiquettes.......: 0
+*   Lignes entre ‚tiquettes.......: 1
+*   Ligne(s) pouvant ˆtre vide(s).: 0
+*   Ligne(s) utilis‚e(s)..........: 4
+*
+PARAMETER ll_sample
+*-- Initialisation des variables d'impression (uniquement pour cette proc‚dure)
+PRIVATE _peject, _wrap
+
+*-- Test si fin de fichier
+IF EOF()
+   RETURN
+ENDIF
+
+IF SET("TALK")="ON"
+   SET TALK OFF
+   gc_talk="ON"
+ELSE
+   gc_talk="OFF"
+ENDIF
+gc_space = SET("SPACE")
+SET SPACE OFF
+gc_time=TIME()      && Heure systŠme pour les champs pr‚-d‚finis
+gd_date=DATE()      && Date systŠme pour les champs pr‚-d‚finis
+gl_fandl=.F.        && Indicateur de premier et dernier enregistrement
+gl_prntflg=.T.      && Indicateur d'impression
+gn_column=1
+gn_element=0
+gn_line=1
+gn_memowid=SET("MEMOWIDTH")
+SET MEMOWIDTH TO 254
+gn_page=_pageno     && Num‚ro de page pour les impressions multiples
+_plineno=0
+_wrap = .F.
+
+*-- Initialisation de l'environnement
+ON ESCAPE DO Prnabort
+
+DECLARE gn_line2[1]
+
+PRINTJOB
+
+
+*-- Initialisation du num‚ro de page pour les impressions multiples
+_pageno=gn_page
+
+IF ll_sample
+   DO Sample
+   IF LASTKEY() = 27
+      RETURN
+   ENDIF
+ENDIF
+
+DO WHILE FOUND() .AND. .NOT. EOF() .AND. gl_prntflg
+
+   gn_line=0
+   *-- Recherche des lignes contenant un champ vide
+   DO Chk4null WITH 0, 5, 5
+
+   DO WHILE gn_line < 6
+      ?
+      gn_line=gn_line+1
+   ENDDO
+   CONTINUE
+ENDDO
+
+IF .NOT. gl_prntflg
+   SET MEMOWIDTH TO gn_memowid
+   SET SPACE &gc_space.
+   SET TALK &gc_talk.
+   ON ESCAPE
+   RETURN
+ENDIF
+
+
+ENDPRINTJOB
+
+
+SET MEMOWIDTH TO gn_memowid
+SET SPACE &gc_space.
+SET TALK &gc_talk.
+ON ESCAPE
+RETURN
+* Fin de la proc‚dure : Stelma.LBG
+
+PROCEDURE Prnabort
+gl_prntflg=.F.
+RETURN
+* Fin de la proc‚dure : Prnabort
+
+FUNCTION ___01
+lc_ret=.F.
+ll_output=.T.
+_pcolno = 6
+?? "KITS DE PREMIERS SOINS" AT 6 
+RETURN lc_ret
+
+FUNCTION ___11
+ll_output=.T.
+RETURN .F.
+
+FUNCTION ___21
+lc_ret=.F.
+ll_output=.T.
+_pcolno = 6
+?? "9 Pansements " AT 6 ;
+,["] ;
+,"STELMA" ;
+,["] 
+RETURN lc_ret
+
+FUNCTION ___31
+lc_ret=.F.
+ll_output=.T.
+_pcolno = 6
+?? "5 Protecteurs " AT 6 ;
+,["] ;
+,"PROPA" ;
+,["] 
+RETURN lc_ret
+
+FUNCTION ___41
+lc_ret=.F.
+ll_output=.T.
+_pcolno = 6
+?? "1 DETTOL Antiseptique" AT 6 
+RETURN lc_ret
+
+
+PROCEDURE Chk4null
+*-- ParamŠtres :
+*
+*-- 1) Num‚ro de ligne de la surface de travail
+*-- 2) Nombre maximum de lignes imprimables
+*-- 3) Nombre d'‚tiquettes de front * nombre de lignes utiles
+*
+PARAMETERS ln_line, ln_lastrow, ln_element
+gn_element=0
+gn_line2[1]=ln_line
+lc_temp=SPACE(7)
+ll_output=.F.
+DO WHILE gn_element < ln_element
+   gn_column=1
+   ll_output=.F.
+   DO WHILE gn_column <= 1
+      IF gn_line2[gn_column] < ln_lastrow
+         lc_temp=LTRIM(STR(gn_line2[gn_column]))+LTRIM(STR(gn_column))
+         DO WHILE ___&lc_temp.()
+            gn_element=gn_element+1
+            gn_line2[gn_column]=gn_line2[gn_column]+1
+            lc_temp=LTRIM(STR(gn_line2[gn_column]))+LTRIM(STR(gn_column))
+         ENDDO
+         gn_element=gn_element+1
+         gn_line2[gn_column]=gn_line2[gn_column]+1
+      ENDIF
+      gn_column=gn_column+1
+   ENDDO
+   IF ll_output
+     ?
+     gn_line=gn_line+1
+   ENDIF
+ENDDO
+RETURN
+* Fin de la proc‚dure : Chk4null
+
+PROCEDURE Sample
+PRIVATE x,y,choice
+DEFINE WINDOW w4sample FROM 15,12 TO 17,70 DOUBLE
+choice="O"
+x=0
+DO WHILE choice = "O"
+   y=0
+   DO WHILE y < 5
+      x=0
+      DO WHILE x < 1
+         ?? REPLICATE("X",35)
+         x=x+1
+      ENDDO
+      ?
+      y=y+1
+   ENDDO
+   x=0
+   DO WHILE x < 1
+      ?
+      x=x+1
+   ENDDO
+   ACTIVATE WINDOW w4sample
+   @ 0,2 SAY "D‚sirez-vous des exemples suppl‚mentaires (O/N) ? ";
+   GET choice PICTURE "!" VALID choice $ "NO"
+   READ
+   DEACTIVATE WINDOW w4sample
+   IF LASTKEY() = 27
+      EXIT
+   ENDIF
+ENDDO
+RELEASE WINDOW w4sample
+RETURN
+* Fin de la proc‚dure : Sample
